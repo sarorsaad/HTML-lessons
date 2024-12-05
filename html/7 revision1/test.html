@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Review Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        .question {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            font-weight: bold;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .correct {
+            color: #4CAF50;
+        }
+        .incorrect {
+            color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <h1>HTML Review Test</h1>
+    <div id="quiz">
+        <div class="question">
+            <p>1. Which tag is used to create a paragraph in HTML?</p>
+            <input type="radio" name="q1" value="a"> &lt;paragraph&gt;<br>
+            <input type="radio" name="q1" value="b"> &lt;p&gt;<br>
+            <input type="radio" name="q1" value="c"> &lt;para&gt;<br>
+        </div>
+
+        <div class="question">
+            <p>2. What is the correct HTML tag for the largest heading?</p>
+            <input type="radio" name="q2" value="a"> &lt;heading&gt;<br>
+            <input type="radio" name="q2" value="b"> &lt;h6&gt;<br>
+            <input type="radio" name="q2" value="c"> &lt;h1&gt;<br>
+        </div>
+
+        <div class="question">
+            <p>3. How do you create a link in HTML?</p>
+            <input type="radio" name="q3" value="a"> &lt;a href="url"&gt;link text&lt;/a&gt;<br>
+            <input type="radio" name="q3" value="b"> &lt;link&gt;url&lt;/link&gt;<br>
+            <input type="radio" name="q3" value="c"> &lt;href&gt;url&lt;/href&gt;<br>
+        </div>
+
+        <div class="question">
+            <p>4. Which tag is used to create an unordered list?</p>
+            <input type="radio" name="q4" value="a"> &lt;list&gt;<br>
+            <input type="radio" name="q4" value="b"> &lt;ul&gt;<br>
+            <input type="radio" name="q4" value="c"> &lt;ol&gt;<br>
+        </div>
+
+        <div class="question">
+            <p>5. What tag is used to create a table row?</p>
+            <input type="radio" name="q5" value="a"> &lt;tr&gt;<br>
+            <input type="radio" name="q5" value="b"> &lt;td&gt;<br>
+            <input type="radio" name="q5" value="c"> &lt;table-row&gt;<br>
+        </div>
+
+        <div class="question">
+            <p>6. Which tag creates an input field in a form?</p>
+            <input type="radio" name="q6" value="a"> &lt;textfield&gt;<br>
+            <input type="radio" name="q6" value="b"> &lt;input&gt;<br>
+            <input type="radio" name="q6" value="c"> &lt;field&gt;<br>
+        </div>
+
+        <button onclick="checkAnswers()">Submit Test</button>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        function checkAnswers() {
+            const correctAnswers = {
+                q1: 'b',
+                q2: 'c',
+                q3: 'a',
+                q4: 'b',
+                q5: 'a',
+                q6: 'b'
+            };
+
+            let score = 0;
+            let total = Object.keys(correctAnswers).length;
+
+            for (let question in correctAnswers) {
+                const selected = document.querySelector(`input[name="${question}"]:checked`);
+                if (selected && selected.value === correctAnswers[question]) {
+                    score++;
+                }
+            }
+
+            const percentage = (score / total) * 100;
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `You got ${score} out of ${total} correct! (${percentage}%)<br>`;
+            
+            if (percentage >= 80) {
+                resultDiv.innerHTML += '<span class="correct">Great job! 🌟</span>';
+            } else if (percentage >= 60) {
+                resultDiv.innerHTML += '<span class="correct">Good work! Keep practicing! 👍</span>';
+            } else {
+                resultDiv.innerHTML += '<span class="incorrect">Keep studying! You can do better! 📚</span>';
+            }
+        }
+    </script>
+</body>
+</html>
