@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic HTML Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        .question, .student-info {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            font-weight: bold;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .correct {
+            color: #4CAF50;
+        }
+        .incorrect {
+            color: #f44336;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <h1>Basic HTML Test</h1>
+    
+    <!-- Student Information Form -->
+    <div class="student-info">
+        <h2>Student Information</h2>
+        <input type="text" id="studentName" placeholder="Your Name" required>
+        <input type="text" id="studentAge" placeholder="Your Age" required>
+    </div>
+
+    <div id="quiz">
+        <div class="question">
+            <p>1. Which tag is used to create a paragraph in HTML?</p>
+            <input type="radio" name="q1" value="a"> &lt;paragraph&gt;<br>
+            <input type="radio" name="q1" value="b"> &lt;p&gt;<br>
+            <input type="radio" name="q1" value="c"> &lt;para&gt;<br>
+        </div>
+
+        <div class="question">
+            <p>2. What is the correct HTML tag for the largest heading?</p>
+            <input type="radio" name="q2" value="a"> &lt;heading&gt;<br>
+            <input type="radio" name="q2" value="b"> &lt;h6&gt;<br>
+            <input type="radio" name="q2" value="c"> &lt;h1&gt;<br>
+        </div>
+
+        <div class="question">
+            <p>3. How do you create a link in HTML?</p>
+            <input type="radio" name="q3" value="a"> &lt;a href="url"&gt;link text&lt;/a&gt;<br>
+            <input type="radio" name="q3" value="b"> &lt;link&gt;url&lt;/link&gt;<br>
+            <input type="radio" name="q3" value="c"> &lt;href&gt;url&lt;/href&gt;<br>
+        </div>
+
+        <div class="question">
+            <p>4. Which tag is used to create an unordered list?</p>
+            <input type="radio" name="q4" value="a"> &lt;list&gt;<br>
+            <input type="radio" name="q4" value="b"> &lt;ul&gt;<br>
+            <input type="radio" name="q4" value="c"> &lt;ol&gt;<br>
+        </div>
+
+        <div class="question">
+            <p>5. Which tag creates an input field in a form?</p>
+            <input type="radio" name="q5" value="a"> &lt;textfield&gt;<br>
+            <input type="radio" name="q5" value="b"> &lt;input&gt;<br>
+            <input type="radio" name="q5" value="c"> &lt;field&gt;<br>
+        </div>
+
+        <button onclick="checkAnswers()">Submit Test</button>
+        <div id="result" class="result"></div>
+
+        <!-- Results Submission Form -->
+        <div id="submitForm" style="display: none;">
+            <h3>Send Your Results</h3>
+            <form action="https://formspree.io/f/myzyvzbn" method="POST">
+                <input type="hidden" id="testResults" name="testResults">
+                <input type="hidden" id="studentNameHidden" name="studentName">
+                <input type="hidden" id="studentAgeHidden" name="studentAge">
+                <button type="submit">Send Results to Teacher</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function checkAnswers() {
+            const studentName = document.getElementById('studentName').value;
+            const studentAge = document.getElementById('studentAge').value;
+
+            if (!studentName || !studentAge) {
+                alert('Please fill in your name and age before submitting the test.');
+                return;
+            }
+
+            const correctAnswers = {
+                q1: 'b',
+                q2: 'c',
+                q3: 'a',
+                q4: 'b',
+                q5: 'b'
+            };
+
+            let score = 0;
+            let total = Object.keys(correctAnswers).length;
+            let answers = {};
+
+            for (let question in correctAnswers) {
+                const selected = document.querySelector(`input[name="${question}"]:checked`);
+                if (selected) {
+                    answers[question] = selected.value;
+                    if (selected.value === correctAnswers[question]) {
+                        score++;
+                    }
+                } else {
+                    answers[question] = 'not answered';
+                }
+            }
+
+            const percentage = (score / total) * 100;
+            const resultDiv = document.getElementById('result');
+            const resultText = `Student: ${studentName}\nAge: ${studentAge}\nScore: ${score} out of ${total} (${percentage}%)\n\nDetailed Answers:\n${JSON.stringify(answers, null, 2)}`;
+            
+            resultDiv.innerHTML = `Score: ${score} out of ${total} (${percentage}%)<br>`;
+            
+            if (percentage >= 80) {
+                resultDiv.innerHTML += '<span class="correct">Great job! 🌟</span>';
+            } else if (percentage >= 60) {
+                resultDiv.innerHTML += '<span class="correct">Good work! Keep practicing! 👍</span>';
+            } else {
+                resultDiv.innerHTML += '<span class="incorrect">Keep studying! You can do better! 📚</span>';
+            }
+
+            // Prepare results for submission
+            document.getElementById('testResults').value = resultText;
+            document.getElementById('studentNameHidden').value = studentName;
+            document.getElementById('studentAgeHidden').value = studentAge;
+            
+            // Show the submission form
+            document.getElementById('submitForm').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
