@@ -39,9 +39,19 @@
         }
         .correct {
             color: #4CAF50;
+            padding: 5px;
+            margin: 5px 0;
         }
         .incorrect {
             color: #f44336;
+            padding: 5px;
+            margin: 5px 0;
+        }
+        .feedback {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
         }
         input[type="text"], input[type="email"] {
             width: 100%;
@@ -128,49 +138,71 @@
             }
 
             const correctAnswers = {
-                q1: 'b',
-                q2: 'c',
-                q3: 'a',
-                q4: 'b',
-                q5: 'b'
+                q1: ['b', '&lt;p&gt; tag'],
+                q2: ['c', '&lt;h1&gt; tag'],
+                q3: ['a', '&lt;a href="url"&gt;link text&lt;/a&gt;'],
+                q4: ['b', '&lt;ul&gt; tag'],
+                q5: ['b', '&lt;input&gt; tag']
             };
 
             let score = 0;
             let total = Object.keys(correctAnswers).length;
             let answers = {};
+            let feedbackHtml = '';
+
+            // Disable all inputs after submission
+            document.querySelectorAll('input[type="radio"]').forEach(input => {
+                input.disabled = true;
+            });
 
             for (let question in correctAnswers) {
                 const selected = document.querySelector(`input[name="${question}"]:checked`);
+                const questionNumber = question.replace('q', '');
+                const questionElement = document.querySelector(`input[name="${question}"]`).closest('.question');
+                
                 if (selected) {
                     answers[question] = selected.value;
-                    if (selected.value === correctAnswers[question]) {
+                    if (selected.value === correctAnswers[question][0]) {
                         score++;
+                        feedbackHtml += `<div class="correct">Question ${questionNumber}: Correct! ✓</div>`;
+                    } else {
+                        feedbackHtml += `
+                            <div class="incorrect">
+                                Question ${questionNumber}: Wrong ✗<br>
+                                Your answer was incorrect. The correct answer is: ${correctAnswers[question][1]}
+                            </div>`;
                     }
                 } else {
                     answers[question] = 'not answered';
+                    feedbackHtml += `
+                        <div class="incorrect">
+                            Question ${questionNumber}: Not answered ✗<br>
+                            The correct answer is: ${correctAnswers[question][1]}
+                        </div>`;
                 }
             }
 
             const percentage = (score / total) * 100;
             const resultDiv = document.getElementById('result');
-            const resultText = `Student: ${studentName}\nAge: ${studentAge}\nScore: ${score} out of ${total} (${percentage}%)\n\nDetailed Answers:\n${JSON.stringify(answers, null, 2)}`;
-            
-            resultDiv.innerHTML = `Score: ${score} out of ${total} (${percentage}%)<br>`;
-            
-            if (percentage >= 80) {
-                resultDiv.innerHTML += '<span class="correct">Great job! 🌟</span>';
-            } else if (percentage >= 60) {
-                resultDiv.innerHTML += '<span class="correct">Good work! Keep practicing! 👍</span>';
-            } else {
-                resultDiv.innerHTML += '<span class="incorrect">Keep studying! You can do better! 📚</span>';
-            }
+            resultDiv.innerHTML = `
+                <h3>Test Results:</h3>
+                <p>Score: ${score} out of ${total} (${percentage}%)</p>
+                <div class="feedback">${feedbackHtml}</div>
+            `;
 
-            // Prepare results for submission
-            document.getElementById('testResults').value = resultText;
+            // Prepare results for email submission
+            const results = {
+                studentName: studentName,
+                studentAge: studentAge,
+                score: score,
+                total: total,
+                percentage: percentage,
+                answers: answers
+            };
+
+            document.getElementById('testResults').value = JSON.stringify(results);
             document.getElementById('studentNameHidden').value = studentName;
             document.getElementById('studentAgeHidden').value = studentAge;
-            
-            // Show the submission form
             document.getElementById('submitForm').classList.remove('hidden');
         }
     </script>
